@@ -1,4 +1,3 @@
 IQDictionary
 ============
-
-category of NSDictionary and NSMutableDictionary
+Category of NSDictionary and NSMutableDictionary , insertMulti value for one key, and easy to get others.
