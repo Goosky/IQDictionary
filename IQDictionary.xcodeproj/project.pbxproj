@@ -19,6 +19,7 @@
 		00CE98FA181C06C700BBA860 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00CE98E2181C06C600BBA860 /* UIKit.framework */; };
 		00CE9902181C06C700BBA860 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 00CE9900181C06C700BBA860 /* InfoPlist.strings */; };
 		00CE9904181C06C700BBA860 /* IQDictionaryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CE9903181C06C700BBA860 /* IQDictionaryTests.m */; };
+		00CE9910181C079300BBA860 /* IQSample.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CE990F181C079300BBA860 /* IQSample.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,8 @@
 		00CE98FF181C06C700BBA860 /* IQDictionaryTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "IQDictionaryTests-Info.plist"; sourceTree = "<group>"; };
 		00CE9901181C06C700BBA860 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		00CE9903181C06C700BBA860 /* IQDictionaryTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IQDictionaryTests.m; sourceTree = "<group>"; };
+		00CE990E181C079300BBA860 /* IQSample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQSample.h; sourceTree = "<group>"; };
+		00CE990F181C079300BBA860 /* IQSample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQSample.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +110,7 @@
 		00CE98E4181C06C600BBA860 /* IQDictionary */ = {
 			isa = PBXGroup;
 			children = (
+				00CE990D181C078300BBA860 /* Sample */,
 				00CE98ED181C06C600BBA860 /* IQAppDelegate.h */,
 				00CE98EE181C06C600BBA860 /* IQAppDelegate.m */,
 				00CE98F0181C06C600BBA860 /* Images.xcassets */,
@@ -142,6 +146,15 @@
 				00CE9900181C06C700BBA860 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		00CE990D181C078300BBA860 /* Sample */ = {
+			isa = PBXGroup;
+			children = (
+				00CE990E181C079300BBA860 /* IQSample.h */,
+				00CE990F181C079300BBA860 /* IQSample.m */,
+			);
+			path = Sample;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -240,6 +253,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00CE9910181C079300BBA860 /* IQSample.m in Sources */,
 				00CE98EF181C06C600BBA860 /* IQAppDelegate.m in Sources */,
 				00CE98EB181C06C600BBA860 /* main.m in Sources */,
 			);
