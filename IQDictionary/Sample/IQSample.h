@@ -10,4 +10,6 @@
 
 @interface IQSample : NSObject
 
+- (void)sample;
+
 @end
