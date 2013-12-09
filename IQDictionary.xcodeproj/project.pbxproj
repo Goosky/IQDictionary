@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0007E54B1851C7C200CD924A /* IQDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 0007E54A1851C7C200CD924A /* IQDictionary.m */; };
+		0007E5511851C93900CD924A /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 0007E5501851C93900CD924A /* README.md */; };
 		00CE98DF181C06C600BBA860 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00CE98DE181C06C600BBA860 /* Foundation.framework */; };
 		00CE98E1181C06C600BBA860 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00CE98E0181C06C600BBA860 /* CoreGraphics.framework */; };
 		00CE98E3181C06C600BBA860 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00CE98E2181C06C600BBA860 /* UIKit.framework */; };
@@ -33,6 +35,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0007E5491851C7C200CD924A /* IQDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQDictionary.h; sourceTree = "<group>"; };
+		0007E54A1851C7C200CD924A /* IQDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQDictionary.m; sourceTree = "<group>"; };
+		0007E5501851C93900CD924A /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		00CE98DB181C06C600BBA860 /* IQDictionary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IQDictionary.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00CE98DE181C06C600BBA860 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		00CE98E0181C06C600BBA860 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -77,6 +82,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0007E5481851C7A800CD924A /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				0007E5491851C7C200CD924A /* IQDictionary.h */,
+				0007E54A1851C7C200CD924A /* IQDictionary.m */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
 		00CE98D2181C06C600BBA860 = {
 			isa = PBXGroup;
 			children = (
@@ -110,6 +124,8 @@
 		00CE98E4181C06C600BBA860 /* IQDictionary */ = {
 			isa = PBXGroup;
 			children = (
+				0007E5501851C93900CD924A /* README.md */,
+				0007E5481851C7A800CD924A /* Classes */,
 				00CE990D181C078300BBA860 /* Sample */,
 				00CE98ED181C06C600BBA860 /* IQAppDelegate.h */,
 				00CE98EE181C06C600BBA860 /* IQAppDelegate.m */,
@@ -233,6 +249,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0007E5511851C93900CD924A /* README.md in Resources */,
 				00CE98E9181C06C600BBA860 /* InfoPlist.strings in Resources */,
 				00CE98F1181C06C600BBA860 /* Images.xcassets in Resources */,
 			);
@@ -254,6 +271,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00CE9910181C079300BBA860 /* IQSample.m in Sources */,
+				0007E54B1851C7C200CD924A /* IQDictionary.m in Sources */,
 				00CE98EF181C06C600BBA860 /* IQAppDelegate.m in Sources */,
 				00CE98EB181C06C600BBA860 /* main.m in Sources */,
 			);
@@ -458,6 +476,7 @@
 				00CE9909181C06C700BBA860 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		00CE990A181C06C700BBA860 /* Build configuration list for PBXNativeTarget "IQDictionaryTests" */ = {
 			isa = XCConfigurationList;
@@ -466,6 +485,7 @@
 				00CE990C181C06C700BBA860 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

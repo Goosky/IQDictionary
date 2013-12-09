@@ -7,6 +7,7 @@
 //
 
 #import "IQAppDelegate.h"
+#import "IQSample.h"
 
 @implementation IQAppDelegate
 
@@ -15,6 +16,8 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
+    IQSample *sample = [[IQSample alloc] init];
+    [sample sample];
     [self.window makeKeyAndVisible];
     return YES;
 }
