@@ -8,7 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		0007E54B1851C7C200CD924A /* IQDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 0007E54A1851C7C200CD924A /* IQDictionary.m */; };
-		0007E5511851C93900CD924A /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 0007E5501851C93900CD924A /* README.md */; };
+		009ACD0718559479005075EB /* AESCrypt.m in Sources */ = {isa = PBXBuildFile; fileRef = 009ACD0018559479005075EB /* AESCrypt.m */; };
+		009ACD0818559479005075EB /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 009ACD0218559479005075EB /* NSData+Base64.m */; };
+		009ACD0918559479005075EB /* NSData+CommonCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 009ACD0418559479005075EB /* NSData+CommonCrypto.m */; };
+		009ACD0A18559479005075EB /* NSString+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 009ACD0618559479005075EB /* NSString+Base64.m */; };
+		009ACD0C18559550005075EB /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 009ACD0B18559550005075EB /* README.md */; };
 		00CE98DF181C06C600BBA860 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00CE98DE181C06C600BBA860 /* Foundation.framework */; };
 		00CE98E1181C06C600BBA860 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00CE98E0181C06C600BBA860 /* CoreGraphics.framework */; };
 		00CE98E3181C06C600BBA860 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00CE98E2181C06C600BBA860 /* UIKit.framework */; };
@@ -37,7 +41,15 @@
 /* Begin PBXFileReference section */
 		0007E5491851C7C200CD924A /* IQDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQDictionary.h; sourceTree = "<group>"; };
 		0007E54A1851C7C200CD924A /* IQDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQDictionary.m; sourceTree = "<group>"; };
-		0007E5501851C93900CD924A /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		009ACCFF18559479005075EB /* AESCrypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AESCrypt.h; sourceTree = "<group>"; };
+		009ACD0018559479005075EB /* AESCrypt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AESCrypt.m; sourceTree = "<group>"; };
+		009ACD0118559479005075EB /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
+		009ACD0218559479005075EB /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
+		009ACD0318559479005075EB /* NSData+CommonCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+CommonCrypto.h"; sourceTree = "<group>"; };
+		009ACD0418559479005075EB /* NSData+CommonCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+CommonCrypto.m"; sourceTree = "<group>"; };
+		009ACD0518559479005075EB /* NSString+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Base64.h"; sourceTree = "<group>"; };
+		009ACD0618559479005075EB /* NSString+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Base64.m"; sourceTree = "<group>"; };
+		009ACD0B18559550005075EB /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		00CE98DB181C06C600BBA860 /* IQDictionary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IQDictionary.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00CE98DE181C06C600BBA860 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		00CE98E0181C06C600BBA860 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -91,9 +103,25 @@
 			path = Classes;
 			sourceTree = "<group>";
 		};
+		009ACCFE18559479005075EB /* AES */ = {
+			isa = PBXGroup;
+			children = (
+				009ACCFF18559479005075EB /* AESCrypt.h */,
+				009ACD0018559479005075EB /* AESCrypt.m */,
+				009ACD0118559479005075EB /* NSData+Base64.h */,
+				009ACD0218559479005075EB /* NSData+Base64.m */,
+				009ACD0318559479005075EB /* NSData+CommonCrypto.h */,
+				009ACD0418559479005075EB /* NSData+CommonCrypto.m */,
+				009ACD0518559479005075EB /* NSString+Base64.h */,
+				009ACD0618559479005075EB /* NSString+Base64.m */,
+			);
+			path = AES;
+			sourceTree = "<group>";
+		};
 		00CE98D2181C06C600BBA860 = {
 			isa = PBXGroup;
 			children = (
+				009ACD0B18559550005075EB /* README.md */,
 				00CE98E4181C06C600BBA860 /* IQDictionary */,
 				00CE98FD181C06C700BBA860 /* IQDictionaryTests */,
 				00CE98DD181C06C600BBA860 /* Frameworks */,
@@ -124,7 +152,7 @@
 		00CE98E4181C06C600BBA860 /* IQDictionary */ = {
 			isa = PBXGroup;
 			children = (
-				0007E5501851C93900CD924A /* README.md */,
+				009ACCFE18559479005075EB /* AES */,
 				0007E5481851C7A800CD924A /* Classes */,
 				00CE990D181C078300BBA860 /* Sample */,
 				00CE98ED181C06C600BBA860 /* IQAppDelegate.h */,
@@ -249,7 +277,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0007E5511851C93900CD924A /* README.md in Resources */,
+				009ACD0C18559550005075EB /* README.md in Resources */,
 				00CE98E9181C06C600BBA860 /* InfoPlist.strings in Resources */,
 				00CE98F1181C06C600BBA860 /* Images.xcassets in Resources */,
 			);
@@ -272,8 +300,12 @@
 			files = (
 				00CE9910181C079300BBA860 /* IQSample.m in Sources */,
 				0007E54B1851C7C200CD924A /* IQDictionary.m in Sources */,
+				009ACD0718559479005075EB /* AESCrypt.m in Sources */,
 				00CE98EF181C06C600BBA860 /* IQAppDelegate.m in Sources */,
+				009ACD0A18559479005075EB /* NSString+Base64.m in Sources */,
 				00CE98EB181C06C600BBA860 /* main.m in Sources */,
+				009ACD0818559479005075EB /* NSData+Base64.m in Sources */,
+				009ACD0918559479005075EB /* NSData+CommonCrypto.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

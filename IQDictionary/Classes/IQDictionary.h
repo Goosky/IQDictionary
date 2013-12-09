@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#define kIQDictionaryAESPasswordKey        @"IQDictionaryAESPasswordKey"
+
 @interface IQDictionary : NSObject
 //instance functions
 - (NSArray *)allKeys;
@@ -20,14 +22,20 @@
 //init dictionary
 - (id)initWithCapacity:(NSUInteger)capacity;
 - (id)initWithDictionary:(NSDictionary *)dict;
-- (id)initWithObjects:(NSArray *)objects forKeys:(NSArray *)keys;
+- (id)initWithCapacity:(NSUInteger)capacity
+              password:(NSString *)password;
+- (id)initWithDictionary:(NSDictionary *)dict
+                password:(NSString *)password;
 - (NSArray *)objectsForKey:(id)aKey;
 - (NSUInteger)objectCountForKey:(id)key;
 - (void)setObject:(id)anObject forKey:(id <NSCopying>)aKey;
 - (void)removeObjectsForKey:(id)aKey;
 - (void)removeAllObjects;
-- (void)removeObjectsForKeys:(NSArray *)keyArray;
 //class functions
 + (instancetype)dictionary;
 + (instancetype)dictionaryWithCapacity:(NSUInteger)capacity;
+//encryption
++ (instancetype)dictionaryWithPassword:(NSString *)password;
++ (instancetype)dictionaryWithCapacity:(NSUInteger)capacity
+                              password:(NSString *)password;
 @end

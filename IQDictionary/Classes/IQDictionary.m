@@ -7,12 +7,14 @@
 //
 
 #import "IQDictionary.h"
+#import "AESCrypt.h"
 
 @interface IQDictionary()
 {
     NSMutableDictionary *_mapping; // Key ~ Value
     NSMutableArray *_keys;  // all keys
     NSUInteger _capacity;   //diction capacity
+    NSString *_password;    //password
 }
 @end
 
@@ -32,6 +34,20 @@
     return __shareIQDictionary;
 }
 
++ (instancetype)shareWithCapacity:(NSUInteger)capacity
+                         password:(NSString *)password
+{
+    static IQDictionary *__shareIQDictionary = nil;
+    
+    static dispatch_once_t mmSharedDbOnceToken;
+    dispatch_once(&mmSharedDbOnceToken, ^{
+        __shareIQDictionary = [[IQDictionary alloc] initWithCapacity:capacity
+                                                            password:password];
+    });
+    
+    return __shareIQDictionary;
+}
+
 #pragma mark - Class Functions
 
 + (instancetype)dictionary
@@ -44,6 +60,16 @@
     return [self shareWithCapacity:capacity];
 }
 
++ (instancetype)dictionaryWithPassword:(NSString *)password
+{
+    return [self shareWithCapacity:0 password:password];
+}
++ (instancetype)dictionaryWithCapacity:(NSUInteger)capacity
+                              password:(NSString *)password
+{
+    return [self shareWithCapacity:capacity password:password];
+}
+
 #pragma mark - Init IQDictionary
 
 - (id)initWithCapacity:(NSUInteger)capacity
@@ -54,6 +80,19 @@
     return self;
 }
 
+- (id)initWithCapacity:(NSUInteger)capacity
+              password:(NSString *)password
+{
+    if (self = [super init]) {
+        [self createWithCapacity:capacity];
+        _password = password;
+        NSAssert( !(_password == nil || [_password isEqualToString:@""]) , @"IQDictionary Password cannot empty");
+        [self savePassword];
+    }
+    return self;
+}
+
+
 - (id)initWithDictionary:(NSDictionary *)dict
 {
     if (self = [super init]) {
@@ -62,16 +101,17 @@
     return self;
 }
 
-- (id)initWithObjects:(NSArray *)objects forKeys:(NSArray *)keys
+- (id)initWithDictionary:(NSDictionary *)dict
+                password:(NSString *)password
 {
     if (self = [super init]) {
-        _mapping = [NSMutableDictionary dictionaryWithObjects:objects forKeys:keys];
-        _capacity = _mapping.count;
-        _keys = [NSMutableArray arrayWithArray:_mapping.allKeys];
+        [self resetWithDictionary:dict];
+        _password = password;
+        NSAssert( !(_password == nil || [_password isEqualToString:@""]) , @"IQDictionary Password cannot empty");
+        [self savePassword];
     }
     return self;
 }
-
 
 #pragma mark - Instances Function Common
 
@@ -95,6 +135,81 @@
     _keys = [NSMutableArray arrayWithArray:_mapping.allKeys];
 }
 
+- (void)updateKeysReferenceArray:(NSArray *)array
+{
+    if (_keys != nil || _keys.count != 0) {
+        [_keys removeAllObjects];
+    }
+    
+    if (_keys == nil) {
+        return;
+    }
+    
+    for (int8_t i = 0; i < array.count; i++) {
+        id key = [array objectAtIndex:i];
+        if ([key isKindOfClass:[NSString class]]) {
+            [_keys addObject:[self encryptKey:key]];
+        }
+        [_keys addObject:key];
+    }
+}
+
+#pragma mark - Encrypt and Decrypt values and keys
+
+- (void)savePassword
+{
+    [[NSUserDefaults standardUserDefaults] setValue:_password
+                                             forKey:kIQDictionaryAESPasswordKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (NSString *)password
+{
+    if (_password != nil && ![_password isEqualToString:@""]) {
+        return _password;
+    }
+    return [[NSUserDefaults standardUserDefaults] objectForKey:kIQDictionaryAESPasswordKey];
+}
+
+- (id)encryptObject:(id)object
+{
+    id ret = object;
+    NSString *password = [self password];
+    if (object != nil
+        && [object isKindOfClass:[NSString class]]
+        && password != nil
+        && ![password isEqualToString:@""]) {
+        ret = [AESCrypt encrypt:object password:password];
+    }
+    return ret;
+}
+
+- (id)decryptObject:(id)object
+{
+    if (object == nil) {
+        return nil;
+    }
+    
+    id ret = object;
+    NSString *password = [self password];
+    if ([object isKindOfClass:[NSString class]]
+        && password != nil
+        && ![password isEqualToString:@""]) {
+        ret = [AESCrypt decrypt:object password:password];
+    }
+    return ret;
+}
+
+- (id)encryptKey:(id)key
+{
+    return [self encryptObject:key];
+}
+
+- (id)decryptKey:(id)key
+{
+    return [self decryptObject:key];
+}
+
 #pragma mark - Instance Functions
 
 - (NSArray *)allKeys
@@ -102,7 +217,15 @@
     if (_mapping == nil || _mapping.count == 0) {
         [self createWithCapacity:0];
     }
-    return _keys;
+    
+    NSMutableArray *keys = [NSMutableArray arrayWithCapacity:_keys.count];
+    for (int8_t i = 0; i < _keys.count; i++) {
+        id key = [_keys objectAtIndex:i];
+        key = [self decryptKey:key];
+        [keys addObject:key];
+    }
+    
+    return [NSArray arrayWithArray:keys];
 }
 
 - (NSArray *)allKeysUsingComparator:(NSComparator)cmptr
@@ -116,10 +239,12 @@
         return [NSArray array];
     }
     
-    [_keys sortUsingComparator:cmptr];
-    [_keys sortedArrayWithOptions:NSSortConcurrent usingComparator:cmptr];
+    NSMutableArray *allkeys = [NSMutableArray arrayWithArray:[self allKeys]];
+    [allkeys sortUsingComparator:cmptr];
+    //update keys
+    [self updateKeysReferenceArray:allkeys];
     
-    return _keys;
+    return [NSArray arrayWithArray:allkeys];
 }
 
 - (NSArray *)allValues
@@ -129,14 +254,23 @@
         return [NSArray array];
     }
     
-    NSMutableArray *values = [NSMutableArray array];
     
     NSArray *allValuesForMapping = [_mapping allValues];//[[],[],[]]
+    NSMutableArray *encryptValues = [NSMutableArray array];
     for (int8_t i = 0; i < allValuesForMapping.count; i++) {
-        NSMutableArray *value = [allValuesForMapping objectAtIndex:i];
-        [values addObjectsFromArray:value];
+        id value = [allValuesForMapping objectAtIndex:i];
+        if ([value isKindOfClass:[NSMutableArray class]]) {
+            [encryptValues addObjectsFromArray:value];
+        }
     }
     
+    //decrypt values
+    NSMutableArray *values = [NSMutableArray array];
+    for (int8_t i = 0; i < encryptValues.count; i++) {
+        id value = [encryptValues objectAtIndex:i];
+        value = [self decryptObject:value];
+        [values addObject:value];
+    }
     return [NSArray arrayWithArray:values];
 }
 
@@ -148,16 +282,29 @@
     }
     
     //sort
-    [_keys sortUsingComparator:cmptr];
     
-    NSMutableArray *values = [NSMutableArray array];
-
+    NSMutableArray *allkeys = [NSMutableArray arrayWithArray:[self allKeys]];
+    [allkeys sortUsingComparator:cmptr];
+    //update keys
+    [self updateKeysReferenceArray:allkeys];
+    
+    
+    NSMutableArray *encryptValues = [NSMutableArray array];
+    
     for (int8_t keyIdx = 0; keyIdx < _keys.count; keyIdx++) {
         id key = [_keys objectAtIndex:keyIdx];
-        NSMutableArray *valuesForkey = [_mapping objectForKey:key];
-        [values addObjectsFromArray:valuesForkey];
+        id valuesForkey = [_mapping objectForKey:key];
+        if ([valuesForkey isKindOfClass:[NSMutableArray class]]) {
+            [encryptValues addObjectsFromArray:valuesForkey];
+        }
     }
     
+    NSMutableArray *values = [NSMutableArray array];
+    for (int8_t i = 0; i < encryptValues.count; i++) {
+        id value = [encryptValues objectAtIndex:i];
+        value = [self decryptObject:value];
+        [values addObject:value];
+    }
     return [NSArray arrayWithArray:values];
 }
 
@@ -171,6 +318,7 @@
     
     NSMutableArray *allValues = [NSMutableArray arrayWithArray:[self allValues]];
     [allValues sortUsingComparator:cmptr];
+    
     return [NSArray arrayWithArray:allValues];
 }
 
@@ -189,15 +337,39 @@
         return [NSArray array];
     }
     
+    id decryptObject = [self decryptObject:anObject];
+    
     NSMutableArray *allKeys = [NSMutableArray array];
     
-    for (int8_t keyIdx = 0; keyIdx < _keys.count; keyIdx++) {
-        id key = [_keys objectAtIndex:keyIdx];
-        NSMutableArray *valuesForkey = [_mapping objectForKey:key];
-        for (int8_t valueIdx = 0; valueIdx < valuesForkey.count; valueIdx++) {
-            id object = [valuesForkey objectAtIndex:valueIdx];
-            if (object == anObject && ![allKeys containsObject:key]) {
-                [allKeys addObject:key];
+    if ([anObject isKindOfClass:[NSString class]]) {
+        for (int8_t keyIdx = 0; keyIdx < _keys.count; keyIdx++) {
+            id key = [_keys objectAtIndex:keyIdx];
+            id newKey = [self decryptKey:key];
+            NSMutableArray *valuesForkey = [_mapping objectForKey:key];
+            for (int8_t valueIdx = 0; valueIdx < valuesForkey.count; valueIdx++) {
+                id object = [valuesForkey objectAtIndex:valueIdx];
+                if (object != nil
+                    && newKey != nil
+                    && ![allKeys containsObject:newKey]) {
+                    if([object isKindOfClass:[NSString class]]
+                       && [object isEqualToString:decryptObject]) {
+                        [allKeys addObject:newKey];
+                    }else if (anObject == object){
+                        [allKeys addObject:newKey];
+                    }
+                }
+            }
+        }
+    }else{
+        for (int8_t keyIdx = 0; keyIdx < _keys.count; keyIdx++) {
+            id key = [_keys objectAtIndex:keyIdx];
+            id newKey = [self decryptKey:key];
+            NSMutableArray *valuesForkey = [_mapping objectForKey:key];
+            for (int8_t valueIdx = 0; valueIdx < valuesForkey.count; valueIdx++) {
+                id object = [valuesForkey objectAtIndex:valueIdx];
+                if (object == anObject && ![allKeys containsObject:newKey]) {
+                    [allKeys addObject:newKey];
+                }
             }
         }
     }
@@ -241,16 +413,39 @@
         return [NSArray array];
     }
     
-    NSArray *values = [NSArray array];
+    NSMutableArray *values = [NSMutableArray array];
     
-    for (int8_t keyIdx = 0; keyIdx < _keys.count; keyIdx++) {
-        id key = [_keys objectAtIndex:keyIdx];
-        if (aKey == key) {
-           values = [_mapping objectForKey:key];
-            break;
+    if ([aKey isKindOfClass:[NSString class]]) {
+        id encryptKey = [self encryptKey:aKey];
+        NSMutableArray *encryptedValues = [NSMutableArray array];
+        for (int8_t keyIdx = 0; keyIdx < _keys.count; keyIdx++) {
+            id key = [_keys objectAtIndex:keyIdx];
+            id value = [_mapping objectForKey:key];
+            if ([key isKindOfClass:[NSString class]]
+                && [encryptKey isEqualToString:key]
+                && [value isKindOfClass:[NSMutableArray class]]) {
+                [encryptedValues addObjectsFromArray:value];
+            }
+        }
+        
+        for (int8_t i = 0; i < encryptedValues.count; i++) {
+            id value = [encryptedValues objectAtIndex:i];
+            if ([value isKindOfClass:[NSString class]]) {
+                value = [self decryptObject:value];
+            }
+            [values addObject:value];
+        }
+        
+    }else{
+        for (int8_t keyIdx = 0; keyIdx < _keys.count; keyIdx++) {
+            id key = [_keys objectAtIndex:keyIdx];
+            if (aKey == key){
+                values = [_mapping objectForKey:key];
+            }
         }
     }
-    return values;
+    
+    return [NSMutableArray arrayWithArray:values];
 }
 
 - (NSUInteger)objectCountForKey:(id)key
@@ -277,16 +472,27 @@
     }
     
     NSMutableArray *valueObject =  nil;
-    if ([_keys containsObject:aKey]) {
-        valueObject = [_mapping objectForKey:aKey];
+    
+    id object = [self encryptObject:anObject];
+    if (object == nil) {
+        return;
+    }
+    
+    id key = [self encryptKey:aKey];
+    if (key == nil) {
+        return;
+    }
+    
+    if ([_keys containsObject:key]) {
+        valueObject = [_mapping objectForKey:key];
         if (valueObject == nil) {
             valueObject = [NSMutableArray array];
         }
-        [valueObject addObject:anObject];
+        [valueObject addObject:object];
     }else{
         valueObject = [NSMutableArray array];
-        [valueObject addObject:anObject];
-        [_mapping setObject:valueObject forKey:aKey];
+        [valueObject addObject:object];
+        [_mapping setObject:valueObject forKey:key];
     }
     
     [self resetWithDictionary:_mapping];
@@ -306,22 +512,12 @@
         [self createWithCapacity:0];
         return;
     }
-    [_mapping removeObjectForKey:aKey];
     
-    [self resetWithDictionary:_mapping];
-}
-
-- (void)removeObjectsForKeys:(NSArray *)keyArray
-{
-    if (keyArray == nil || keyArray.count == 0) {
+    id key = [self encryptKey:aKey];
+    if (key == nil) {
         return;
     }
-    
-    if (_mapping == nil || _mapping.count == 0) {
-        [self createWithCapacity:0];
-        return;
-    }
-    [_mapping removeObjectsForKeys:keyArray];
+    [_mapping removeObjectForKey:key];
     
     [self resetWithDictionary:_mapping];
 }

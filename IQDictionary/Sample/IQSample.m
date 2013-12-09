@@ -8,6 +8,7 @@
 
 #import "IQSample.h"
 #import "IQDictionary.h"
+#import "AESCrypt.h"
 
 @implementation IQSample
 
@@ -33,10 +34,12 @@
     [iqDictionary setObject:@"value25" forKey:@"key25"];
     NSLog(@"objectsForkey %@",[iqDictionary objectsForKey:@"key03"]);
     NSLog(@"all keys %@",[iqDictionary allKeys]);
-    NSLog(@"allKeys Sorted %@",[iqDictionary allKeysUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+    NSLog(@"allkey count %d",[iqDictionary allKeys].count);
+    NSArray *allkeys = [iqDictionary allKeysUsingComparator:^NSComparisonResult(id obj1, id obj2) {
         return [obj1 compare:obj2];
-    }]);
-    
+    }];
+    NSLog(@"allKeys Sorted %@",allkeys);
+    NSLog(@"allkey Sorted count %d",allkeys.count);
     NSLog(@"allValues %@",[iqDictionary allValues]);
     NSLog(@"allValues Sorted key%@",[iqDictionary allValuesForSortedKeyUsingComparator:^NSComparisonResult(id obj1, id obj2) {
         return [obj1 compare:obj2];
@@ -58,6 +61,18 @@
     NSLog(@"allValues Sorted values%@",[iqDictionary allValuesForSortedUsingComparator:^NSComparisonResult(id obj1, id obj2) {
         return [obj1 compare:obj2];
     }]);
+    
+    NSLog(@"IQDcitionary with password");
+    
+    IQDictionary *iqDictWithPassword = [[IQDictionary alloc] initWithCapacity:0 password:@"zcq"];
+    [iqDictWithPassword setObject:@"value11" forKey:@"key1"];
+    [iqDictWithPassword setObject:@"value12" forKey:@"key1"];
+    [iqDictWithPassword setObject:@"value13" forKey:@"key1"];
+    [iqDictWithPassword setObject:@"value2" forKey:@"key2"];
+    [iqDictWithPassword setObject:@"value3" forKey:@"key3"];
+    [iqDictWithPassword setObject:@"value4" forKey:@"key4"];
+    [iqDictWithPassword setObject:@"value5" forKey:@"key5"];
+    NSLog(@"objectforkey %@",[iqDictWithPassword objectsForKey:@"key1"]);
 }
 
 @end
